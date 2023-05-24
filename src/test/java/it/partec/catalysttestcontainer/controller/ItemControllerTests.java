@@ -1,5 +1,6 @@
 package it.partec.catalysttestcontainer.controller;
 
+import it.partec.catalysttestcontainer.configuration.AbstractContainerBaseTest;
 import it.partec.catalysttestcontainer.model.Item;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,32 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Testcontainers
-class ItemControllerTests {
-
-  @Container
-  private static final MySQLContainer<?> MY_SQL_CONTAINER = new MySQLContainer<>("mysql:8.0")
-          .withInitScript("init.sql")
-          .withDatabaseName("catalyst")
-          .withUsername("root")
-          .withPassword("root")
-          .withExposedPorts(3306);
-
-  @DynamicPropertySource
-  private static void setupProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.datasource.url", MY_SQL_CONTAINER::getJdbcUrl);
-    registry.add("spring.datasource.username", MY_SQL_CONTAINER::getUsername);
-    registry.add("spring.datasource.password", MY_SQL_CONTAINER::getPassword);
-  }
+class ItemControllerTests extends AbstractContainerBaseTest {
 
   @LocalServerPort
   private int port;
