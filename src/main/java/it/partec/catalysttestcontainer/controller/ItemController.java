@@ -1,7 +1,7 @@
-package it.partec.catalysttestscontainer.controller;
+package it.partec.catalysttestcontainer.controller;
 
-import it.partec.catalysttestscontainer.model.Item;
-import it.partec.catalysttestscontainer.service.ItemService;
+import it.partec.catalysttestcontainer.model.Item;
+import it.partec.catalysttestcontainer.service.ItemService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

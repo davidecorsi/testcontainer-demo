@@ -1,11 +1,12 @@
-package it.partec.catalysttestscontainer.service.impl;
+package it.partec.catalysttestcontainer.service.impl;
 
-import it.partec.catalysttestscontainer.model.Item;
-import it.partec.catalysttestscontainer.repository.ItemRepository;
-import it.partec.catalysttestscontainer.service.ItemService;
+import it.partec.catalysttestcontainer.model.Item;
+import it.partec.catalysttestcontainer.repository.ItemRepository;
+import it.partec.catalysttestcontainer.service.ItemService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -19,12 +20,14 @@ public class ItemServiceImpl implements ItemService {
   private ItemRepository itemRepository;
 
   @Override
+  @Transactional(readOnly = true)
   public List<Item> findAllItems() {
     log.debug("Ricerca tutti gli articoli");
     return itemRepository.findAll();
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public Long createItem(Item item) {
     log.debug("Creazione articolo");
     Long id = itemRepository.save(item).getId();
@@ -33,6 +36,7 @@ public class ItemServiceImpl implements ItemService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Item getItem(Long id) {
     log.debug("Ricerca articolo");
     return itemRepository.findById(id)
@@ -40,6 +44,7 @@ public class ItemServiceImpl implements ItemService {
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public void updateItem(Long id, Item item) {
     log.debug("Aggiornamento articolo");
     Optional<Item> itemOptional = itemRepository.findById(id);
@@ -49,6 +54,7 @@ public class ItemServiceImpl implements ItemService {
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public void deleteItem(Long id) {
     log.debug("Cancellazione articolo");
     itemRepository.deleteById(id);

@@ -1,6 +1,6 @@
-package it.partec.catalysttestscontainer.repository;
+package it.partec.catalysttestcontainer.repository;
 
-import it.partec.catalysttestscontainer.model.Item;
+import it.partec.catalysttestcontainer.model.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

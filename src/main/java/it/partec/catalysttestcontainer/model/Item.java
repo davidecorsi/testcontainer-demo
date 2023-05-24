@@ -1,4 +1,4 @@
-package it.partec.catalysttestscontainer.model;
+package it.partec.catalysttestcontainer.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package it.partec.catalysttestscontainer;
+package it.partec.catalysttestcontainer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

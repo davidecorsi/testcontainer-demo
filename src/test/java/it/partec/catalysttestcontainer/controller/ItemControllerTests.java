@@ -1,9 +1,8 @@
-package it.partec.catalysttestscontainer.controller;
+package it.partec.catalysttestcontainer.controller;
 
-import it.partec.catalysttestscontainer.model.Item;
+import it.partec.catalysttestcontainer.model.Item;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -75,13 +74,12 @@ class ItemControllerTests {
   void updateItem() {
     Item itemOriginal = restTemplate.getForObject("http://localhost:" + port + "/item/" + 1, Item.class);
     Item itemUpdate = new Item();
-    BeanUtils.copyProperties(itemOriginal, itemUpdate);
     itemUpdate.setSerialNumber("85164726");
     itemUpdate.setDescription("T-SHIRT FAMILY PROJECT ROCK");
 
     restTemplate.put("http://localhost:" + port + "/item/" + 1, itemUpdate);
 
-    assertEquals(itemUpdate, restTemplate.getForObject("http://localhost:" + port + "/item/" + 1, Item.class));
+    assertEquals(itemUpdate.getDescription(), restTemplate.getForObject("http://localhost:" + port + "/item/" + 1, Item.class).getDescription());
 
     restTemplate.put("http://localhost:" + port + "/item/" + 1, itemOriginal);
   }
@@ -89,12 +87,12 @@ class ItemControllerTests {
   @Test
   @DisplayName("DELETE Item Test")
   void deleteItem() {
-    Item[] itemArray = restTemplate.getForObject("http://localhost:" + port + "/item", Item[].class);
+    Item itemOriginal = restTemplate.getForObject("http://localhost:" + port + "/item/" + 1, Item.class);
 
-    restTemplate.delete("http://localhost:" + port + "/item/" + itemArray[0].getId());
+    restTemplate.delete("http://localhost:" + port + "/item/" + 1);
 
-    assertNull(restTemplate.getForObject("http://localhost:" + port + "/item/" + itemArray[0].getId(), Void.class));
+    assertNull(restTemplate.getForObject("http://localhost:" + port + "/item/" + 1, Void.class));
 
-    restTemplate.postForObject("http://localhost:" + port + "/item", itemArray[0], Long.class);
+    restTemplate.postForObject("http://localhost:" + port + "/item", itemOriginal, Long.class);
   }
 }

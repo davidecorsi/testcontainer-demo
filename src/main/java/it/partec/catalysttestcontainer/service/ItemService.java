@@ -1,6 +1,6 @@
-package it.partec.catalysttestscontainer.service;
+package it.partec.catalysttestcontainer.service;
 
-import it.partec.catalysttestscontainer.model.Item;
+import it.partec.catalysttestcontainer.model.Item;
 
 import java.util.List;
 
