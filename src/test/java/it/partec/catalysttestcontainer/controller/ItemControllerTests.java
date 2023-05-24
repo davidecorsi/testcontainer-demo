@@ -9,9 +9,12 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,18 +23,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class ItemControllerTests {
 
   @Container
-  private static final MySQLContainer<?> MY_SQL_CONTAINER = new MySQLContainer<>("mysql:8.0")
-          .withInitScript("init.sql")
-          .withDatabaseName("catalyst")
-          .withUsername("root")
-          .withPassword("root")
-          .withExposedPorts(3306);
+  private static final DockerComposeContainer<?> DOCKER_COMPOSE_CONTAINER = new DockerComposeContainer(new File("docker-compose.yml"))
+      .withExposedService("db", 3306)
+      .waitingFor("db", Wait.forLogMessage(".*3306.*", 1));
 
   @DynamicPropertySource
   private static void setupProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.datasource.url", MY_SQL_CONTAINER::getJdbcUrl);
-    registry.add("spring.datasource.username", MY_SQL_CONTAINER::getUsername);
-    registry.add("spring.datasource.password", MY_SQL_CONTAINER::getPassword);
+    registry.add("spring.datasource.url", () ->
+        "jdbc:mysql://" + DOCKER_COMPOSE_CONTAINER.getServiceHost("db", 3306) + ":" +
+            DOCKER_COMPOSE_CONTAINER.getServicePort("db", 3306) + "/catalyst");
+    registry.add("spring.datasource.username", () -> "root");
+    registry.add("spring.datasource.password", () -> "root");
   }
 
   @LocalServerPort
@@ -50,14 +52,14 @@ class ItemControllerTests {
   @DisplayName("CREATE Item Test")
   void createItem() {
     Item item = Item.builder()
-            .serialNumber("85164726")
-            .description("T-SHIRT FAMILY PROJECT ROCK")
-            .build();
+        .serialNumber("85164726")
+        .description("T-SHIRT FAMILY PROJECT ROCK")
+        .build();
 
     Long id = restTemplate.postForObject("http://localhost:" + port + "/item", item, Long.class);
 
     assertEquals("T-SHIRT FAMILY PROJECT ROCK", restTemplate.getForObject("http://localhost:" + port + "/item/" + id, Item.class)
-            .getDescription());
+        .getDescription());
 
     restTemplate.delete("http://localhost:" + port + "/item/" + 6);
   }
@@ -66,7 +68,7 @@ class ItemControllerTests {
   @DisplayName("GET Item Test")
   void getItem() {
     assertEquals("T-SHIRT TECH 2.0", restTemplate.getForObject("http://localhost:" + port + "/item/" + 1, Item.class)
-            .getDescription());
+        .getDescription());
   }
 
   @Test
